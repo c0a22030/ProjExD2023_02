@@ -1,7 +1,5 @@
 import random
 import sys
-
-
 import pygame as pg
 
 
@@ -49,7 +47,10 @@ def main():
     vx, vy = +1, +1  # 爆弾の速度を指定
     bb_rect = bb_img.get_rect()  # rectクラスを定義
     bb_rect.center = x, y  # 爆弾の座標を指定
-
+    kkend_img = pg.image.load("ex02/fig/8.png")
+    kkend_img = pg.transform.rotozoom(kkend_img, 0, 2.0)
+    kk = True
+    ktmr = 0
 
     while True:
         for event in pg.event.get():
@@ -69,8 +70,11 @@ def main():
                     kk_rct.move_ip(-mv[0], -mv[1])  # こうかとんの移動方向
 
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, kk_rct)
-        avx, avy = vx*accs[min(tmr//1000, 1000)], vy*accs[min(tmr//1000, 9)]  # tmrの値によって、座標の変化量がaccs倍になる
+        if kk == True:
+            screen.blit(kk_img, kk_rct)
+        else:
+            screen.blit(kkend_img, kk_rct)
+        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]  # tmrの値によって、座標の変化量がaccs倍になる
         bb_rect.move_ip(avx, avy)  # 爆弾の移動
         yoko, tate = check_bound(screen.get_rect(), bb_rect)
         if not yoko:  # 爆弾が横方向に画面外へ出たとき 
@@ -79,8 +83,12 @@ def main():
             vy *= -1
         screen.blit(bb_img, bb_rect)  # 爆弾を表示
         if kk_rct.colliderect(bb_rect) == True:  # こうかとんと爆弾が衝突したとき
-            return main()  # main関数からreturnする
+            kk = False
 
+            ktmr += 1
+        if  ktmr > 100:
+            return main()  # main関数からreturnする
+                        
         pg.display.update()
         clock.tick(1000)
 
