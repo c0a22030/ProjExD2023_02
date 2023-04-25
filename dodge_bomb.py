@@ -13,6 +13,22 @@ delta = {
         }
 
 
+def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
+    '''
+    オブジェクトが画面内or画面外を判定し、真理値タプルを表す関数
+    引数１：画面SurfaceのRect
+    引数２：こうかとん、または、爆弾SurfaceのRect
+    引数３：横方向、縦方向のはみ出し判定結果（画面内：True／画面外：False）
+    '''
+
+    yoko, tate = True, True
+    if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
+        yoko = False
+    if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom:
+        tate = False
+    return yoko, tate
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
@@ -44,9 +60,19 @@ def main():
             if key_lst[k]:  # 指定したキーが押されたとき
                 kk_rct.move_ip(mv)  # こうかとんの移動方向
 
+        if check_bound(screen.get_rect(), kk_rct) != (True, True):
+            for k, mv in delta.items():  # 辞書を取り出す
+                if key_lst[k]:  # 指定したキーが押されたとき
+                    kk_rct.move_ip(-mv[0], -mv[1])  # こうかとんの移動方向
+
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         bb_rect.move_ip(vx, vy)  # 爆弾の移動
+        yoko, tate = check_bound(screen.get_rect(), bb_rect)
+        if not yoko:
+            vx *= -1
+        if not tate:
+            vy *= -1
         screen.blit(bb_img, bb_rect)  # 爆弾を表示
 
         pg.display.update()
