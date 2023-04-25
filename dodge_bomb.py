@@ -13,6 +13,8 @@ delta = {
         }
 
 
+accs = [a for a in range(1, 11)]  # １から１０のリスト
+
 
 def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     '''
@@ -47,7 +49,7 @@ def main():
     vx, vy = +1, +1  # 爆弾の速度を指定
     bb_rect = bb_img.get_rect()  # rectクラスを定義
     bb_rect.center = x, y  # 爆弾の座標を指定
-    
+
 
     while True:
         for event in pg.event.get():
@@ -68,7 +70,8 @@ def main():
 
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
-        bb_rect.move_ip(vx, vy)  # 爆弾の移動
+        avx, avy = vx*accs[min(tmr//1000, 1000)], vy*accs[min(tmr//1000, 9)]  # tmrの値によって、座標の変化量がaccs倍になる
+        bb_rect.move_ip(avx, avy)  # 爆弾の移動
         yoko, tate = check_bound(screen.get_rect(), bb_rect)
         if not yoko:  # 爆弾が横方向に画面外へ出たとき 
             vx *= -1
