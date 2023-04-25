@@ -13,6 +13,7 @@ delta = {
         }
 
 
+
 def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     '''
     オブジェクトが画面内or画面外を判定し、真理値タプルを表す関数
@@ -22,9 +23,9 @@ def check_bound(scr_rct: pg.Rect, obj_rct: pg.Rect) -> tuple[bool, bool]:
     '''
 
     yoko, tate = True, True
-    if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
+    if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:  # オブジェクトが横方向に画面外へ出たとき
         yoko = False
-    if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom:
+    if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom:  # オブジェクトが縦方向に画面外へ出たとき
         tate = False
     return yoko, tate
 
@@ -69,13 +70,13 @@ def main():
         screen.blit(kk_img, kk_rct)
         bb_rect.move_ip(vx, vy)  # 爆弾の移動
         yoko, tate = check_bound(screen.get_rect(), bb_rect)
-        if not yoko:
+        if not yoko:  # 爆弾が横方向に画面外へ出たとき 
             vx *= -1
-        if not tate:
+        if not tate:  # 爆弾が縦方向に画面外へ出たとき
             vy *= -1
         screen.blit(bb_img, bb_rect)  # 爆弾を表示
-        if kk_rct.colliderect(bb_rect) == True:
-            return
+        if kk_rct.colliderect(bb_rect) == True:  # こうかとんと爆弾が衝突したとき
+            return main()  # main関数からreturnする
 
         pg.display.update()
         clock.tick(1000)
