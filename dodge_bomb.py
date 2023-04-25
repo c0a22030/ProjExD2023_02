@@ -49,8 +49,8 @@ def main():
     bb_rect.center = x, y  # 爆弾の座標を指定
     kkend_img = pg.image.load("ex02/fig/8.png")
     kkend_img = pg.transform.rotozoom(kkend_img, 0, 2.0)
-    kk = True
-    ktmr = 0
+    kk = True  # こうかとんの表示の変更変数
+    ktmr = 0  # 爆弾とこうかとんがぶつかってからの時間
 
     while True:
         for event in pg.event.get():
@@ -70,10 +70,10 @@ def main():
                     kk_rct.move_ip(-mv[0], -mv[1])  # こうかとんの移動方向
 
         screen.blit(bg_img, [0, 0])
-        if kk == True:
-            screen.blit(kk_img, kk_rct)
-        else:
-            screen.blit(kkend_img, kk_rct)
+        if kk == True:  # kkがTrueのとき
+            screen.blit(kk_img, kk_rct)  # こうかとんを表示
+        else:  # kkがFalseのとき
+            screen.blit(kkend_img, kk_rct)  # 泣いているこうかとんを表示
         avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]  # tmrの値によって、座標の変化量がaccs倍になる
         bb_rect.move_ip(avx, avy)  # 爆弾の移動
         yoko, tate = check_bound(screen.get_rect(), bb_rect)
@@ -83,11 +83,11 @@ def main():
             vy *= -1
         screen.blit(bb_img, bb_rect)  # 爆弾を表示
         if kk_rct.colliderect(bb_rect) == True:  # こうかとんと爆弾が衝突したとき
-            kk = False
-
+            kk = False  # ないているこうかとんを表示
+            bb_rect = kk_rct  # 爆弾とこうかとんをくっつける
             ktmr += 1
-        if  ktmr > 100:
-            return main()  # main関数からreturnする
+        if  ktmr > 1000:  # 1000を超えたとき
+            return main()  # main関数からreturnし、ゲームをリセット
                         
         pg.display.update()
         clock.tick(1000)
